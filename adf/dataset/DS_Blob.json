@@ -1,0 +1,45 @@
+{
+	"name": "DS_Blob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Blob",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"dpdirectory": {
+				"type": "string"
+			},
+			"dpfilename": {
+				"type": "string"
+			},
+			"dpcontainer": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().dpfilename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().dpdirectory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().dpcontainer",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
