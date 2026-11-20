@@ -13,6 +13,16 @@ A retail data engineering project exploring two ways to clean sales data in Azur
 
 [Get started](docs/setup.md) · [Architecture](docs/architecture.md) · [Data dictionary](docs/data-dictionary.md) · [Contribute](CONTRIBUTING.md)
 
+## Why I built this project
+
+I built this project to understand how Azure data engineering components work together: moving files with Azure Data Factory, accessing cloud storage, cleaning transactions with PySpark, storing validated data in Delta, and presenting results in a Databricks dashboard.
+
+Retail sales gave me a concrete business problem to work with. Sales records explain what was purchased, while customer and product data add the context needed to compare revenue, product performance, and geographic contribution. I used a small synthetic dataset so I could trace individual records, reconcile every metric, and focus on understanding the workflow before increasing its scale.
+
+**Databricks serverless compute was new to me when I started this project.** Working through storage access, notebook execution, Unity Catalog volumes, and the dashboard's SQL warehouse became a major part of the learning experience. Keeping both the SAS and Unity Catalog approaches in the repository shows that progression and the tradeoffs I encountered.
+
+The goal was to produce a clear, reviewable portfolio project with real configuration files, readable code, documented decisions, and verified results. The repository also makes the remaining deployment and orchestration work explicit rather than presenting a learning project as a finished production platform.
+
 ## Dashboard preview
 
 ![Retail Sales Intelligence executive overview](dashboards/screenshots/01-executive-overview.jpg)
@@ -52,7 +62,7 @@ flowchart LR
 
 Solid lines describe the notebook workflows. Dashed lines show the workspace dashboard and the independently configured ADF ingestion stage; an orchestrated ingestion-to-dashboard run has not been verified. This is not yet a one-command deployment.
 
-## Included and pending
+## Repository contents
 
 | Component | Repository status |
 | --- | --- |
@@ -88,6 +98,29 @@ These are **alternative workflows**, not sequential stages. See the [notebook gu
 
 Quantity validation is deliberately narrow. Malformed dates, conflicting duplicate IDs, missing dimension matches, and monetary precision need additional rules before production use. See [data definitions](docs/data-dictionary.md).
 
+## Challenges faced and how I addressed them
+
+| Challenge | What happened | Resolution and learning |
+| --- | --- | --- |
+| Learning serverless data access | A driver-local CSV download and a Spark file read were not interchangeable in the serverless workflow. | Kept an explicitly small-file HTTP/pandas example and added governed Spark reads through Unity Catalog volumes. I learned to distinguish driver-local files from storage accessible to Spark. |
+| Understanding Blob Storage and ADLS Gen2 | I initially associated the choice with structured versus semi-structured data. | Learned that both can hold the same file types, while hierarchical namespace adds directory capabilities. The exported storage configuration now has hierarchical namespace enabled. |
+| Debugging missing files and SAS authentication | Incorrect container/file paths caused 404 errors; SAS permission and signature problems caused 403 errors. | Checked the exact destination, resource scope, permissions, and token formatting. Published notebooks now retrieve SAS values through secret references rather than embedding them in code. |
+| Understanding Spark's execution model | An incorrect `price` reference appeared to work until a later action evaluated the transformation chain. | Corrected revenue to `quantity * unit_price` and reran the cleaning stages from the source. This made Spark's lazy evaluation and notebook state much clearer. |
+| Separating CSV and Delta outputs | Early write cells mixed format and save-mode options, and the raw table was saved before cleaning. | Separated CSV directory writes from the managed Delta table write and moved the table write after validation. I also documented overwrite behavior. |
+| Making the dashboard usable | Charts initially lacked an attached SQL warehouse; later review found unreadable KPI colors in dark mode and date assumptions tied to raw CSV text. | Attached the project warehouse, organized five focused pages, let KPI colors inherit the theme, and made date expressions accept raw text or cleaned Date columns. |
+| Moving a cloud project into Git | Connecting a Git account did not automatically capture pipelines, data, dashboards, and Azure infrastructure together. | Tracked notebooks and the dashboard in a Databricks Git folder, connected ADF separately, exported ARM templates, and added the approved practice files and setup documentation. |
+
+These were development and learning challenges encountered in this project, not production incidents. The [validation record](docs/validation.md) distinguishes checks that passed from writes and deployments that were not run.
+
+## What I learned
+
+- Storage paths, identity permissions, and token scope are part of the data workflow, not just initial setup details.
+- Serverless compute still requires understanding where data lives and which engine can access it.
+- A successful intermediate notebook cell does not prove that the complete Spark transformation chain is valid.
+- CSV files, Spark CSV directories, and Delta tables are different outputs with different uses.
+- A dashboard needs consistent metric definitions and working filters as well as a polished layout.
+- A useful GitHub project includes reproducible instructions, configuration, sample data, and honest validation boundaries alongside the code.
+
 ## Quick start
 
 1. Clone this repository into a Databricks Git folder.
@@ -122,6 +155,7 @@ These reconcile to the bundled practice CSVs and the live dashboard. The Catalog
 ├── adf/                # Connection/import instructions
 ├── dashboards/         # Dashboard export guide
 ├── data/               # Input and publication guidance
+├── databricks/         # Optional development namespace setup SQL
 ├── docs/               # Setup, architecture, definitions, status
 ├── infrastructure/     # Azure export guidance
 ├── tools/              # Offline repository checks
