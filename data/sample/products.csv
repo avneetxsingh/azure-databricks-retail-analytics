@@ -1,0 +1,11 @@
+product_id,product_name,category,unit_price,brand
+2001,Laptop Pro 15,Electronics,1299.99,TechNova
+2002,Wireless Mouse,Accessories,29.99,TechNova
+2003,Mechanical Keyboard,Accessories,89.99,KeyMaster
+2004,4K Monitor,Electronics,399.99,ViewMax
+2005,USB-C Dock,Accessories,149.99,ConnectX
+2006,Noise Cancelling Headphones,Audio,249.99,SoundWave
+2007,Webcam HD,Accessories,79.99,VisionTech
+2008,Office Chair,Furniture,299.99,ComfortPlus
+2009,Standing Desk,Furniture,449.99,WorkSpace
+2010,External SSD 1TB,Storage,119.99,DataDrive

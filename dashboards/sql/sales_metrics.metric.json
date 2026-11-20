@@ -1,0 +1,171 @@
+{
+  "source": "WITH orders_clean AS (\n  SELECT sale_id,\n         COALESCE(try_cast(sale_date AS DATE), CAST(try_to_timestamp(CAST(sale_date AS STRING), 'M/d/yyyy') AS DATE)) AS sale_date,\n         customer_id,\n         product_id,\n         quantity,\n         CAST(unit_price AS DECIMAL(18,2)) AS unit_price\n  FROM ct_salesanalytics.schema_salesanalytics.orders\n  WHERE quantity > 0\n),\ncustomers AS (\n  SELECT customer_id, customer_name, city, state, country\n  FROM read_files('/Volumes/ct_salesanalytics/schema_salesanalytics/vol_sales/customers.csv', format => 'csv', header => true)\n  QUALIFY ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY customer_name) = 1\n),\nproducts AS (\n  SELECT product_id, product_name, category, brand\n  FROM read_files('/Volumes/ct_salesanalytics/schema_salesanalytics/vol_sales/products.csv', format => 'csv', header => true)\n  QUALIFY ROW_NUMBER() OVER (PARTITION BY product_id ORDER BY product_name) = 1\n)\nSELECT o.sale_id,\n       o.sale_date,\n       o.customer_id,\n       o.product_id,\n       o.quantity,\n       o.unit_price,\n       CAST(o.quantity * o.unit_price AS DECIMAL(18,2)) AS line_revenue,\n       COALESCE(c.customer_name, 'Unmatched customer') AS customer_name,\n       COALESCE(c.city, 'Unknown') AS city,\n       COALESCE(c.state, 'Unknown') AS state,\n       COALESCE(c.country, 'Unknown') AS country,\n       COALESCE(p.product_name, 'Unmatched product') AS product_name,\n       COALESCE(p.category, 'Unknown') AS category,\n       COALESCE(p.brand, 'Unknown') AS brand\nFROM orders_clean o\nLEFT JOIN customers c ON o.customer_id = c.customer_id\nLEFT JOIN products p ON o.product_id = p.product_id",
+  "measures": [
+    {
+      "name": "revenue",
+      "expr": "SUM(line_revenue)",
+      "comment": "SUM(quantity * unit_price), USD",
+      "format": {
+        "type": "currency",
+        "currencyCode": "USD",
+        "decimalPlaces": {
+          "type": "exact",
+          "places": 2.0
+        }
+      }
+    },
+    {
+      "name": "orders",
+      "expr": "COUNT(DISTINCT sale_id)",
+      "comment": "Distinct sale_id values"
+    },
+    {
+      "name": "units",
+      "expr": "SUM(quantity)"
+    },
+    {
+      "name": "customers",
+      "expr": "COUNT(DISTINCT customer_id)",
+      "comment": "Distinct purchasing customer IDs in the selection"
+    },
+    {
+      "name": "products_sold",
+      "expr": "COUNT(DISTINCT product_id)",
+      "comment": "Distinct product IDs purchased in the selection"
+    },
+    {
+      "name": "avg_order_value",
+      "expr": "try_divide(MEASURE(revenue), MEASURE(orders))",
+      "format": {
+        "type": "currency",
+        "currencyCode": "USD",
+        "decimalPlaces": {
+          "type": "exact",
+          "places": 2.0
+        }
+      }
+    },
+    {
+      "name": "revenue_per_customer",
+      "expr": "try_divide(MEASURE(revenue), MEASURE(customers))",
+      "format": {
+        "type": "currency",
+        "currencyCode": "USD",
+        "decimalPlaces": {
+          "type": "exact",
+          "places": 2.0
+        }
+      }
+    },
+    {
+      "name": "orders_per_customer",
+      "expr": "try_divide(MEASURE(orders), MEASURE(customers))"
+    },
+    {
+      "name": "first_sale_date",
+      "expr": "MIN(sale_date)"
+    },
+    {
+      "name": "last_sale_date",
+      "expr": "MAX(sale_date)"
+    },
+    {
+      "name": "sales_days",
+      "expr": "COUNT(DISTINCT sale_date)"
+    },
+    {
+      "name": "revenue_all_products",
+      "expr": "SUM(line_revenue)",
+      "comment": "Revenue across all products in the current selection (product, category and brand removed from the grain)",
+      "window": [
+        {
+          "order": "product_name",
+          "range": "all"
+        },
+        {
+          "order": "category",
+          "range": "all"
+        },
+        {
+          "order": "brand",
+          "range": "all"
+        }
+      ]
+    },
+    {
+      "name": "product_revenue_share",
+      "expr": "try_divide(MEASURE(revenue), MEASURE(revenue_all_products))",
+      "format": {
+        "type": "percentage",
+        "decimalPlaces": {
+          "type": "exact",
+          "places": 1.0
+        }
+      }
+    }
+  ],
+  "version": "1.1",
+  "comment": "Retail sales metrics. One source row = one sale_id (order line). Valid rows only: quantity > 0. Revenue = quantity * unit_price in USD.",
+  "dimensions": [
+    {
+      "name": "sale_date",
+      "expr": "sale_date"
+    },
+    {
+      "name": "sale_id",
+      "expr": "sale_id"
+    },
+    {
+      "name": "customer_id",
+      "expr": "customer_id"
+    },
+    {
+      "name": "customer_name",
+      "expr": "customer_name"
+    },
+    {
+      "name": "city",
+      "expr": "city"
+    },
+    {
+      "name": "state",
+      "expr": "state"
+    },
+    {
+      "name": "state_code",
+      "expr": "concat('US-', state)"
+    },
+    {
+      "name": "country_code",
+      "expr": "country"
+    },
+    {
+      "name": "product_id",
+      "expr": "product_id"
+    },
+    {
+      "name": "product_name",
+      "expr": "product_name"
+    },
+    {
+      "name": "category",
+      "expr": "category"
+    },
+    {
+      "name": "brand",
+      "expr": "brand"
+    },
+    {
+      "name": "quantity",
+      "expr": "quantity"
+    },
+    {
+      "name": "unit_price",
+      "expr": "unit_price"
+    },
+    {
+      "name": "line_revenue",
+      "expr": "line_revenue"
+    }
+  ]
+}

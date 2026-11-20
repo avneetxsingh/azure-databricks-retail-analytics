@@ -1,0 +1,11 @@
+customer_id,customer_name,email,city,state,country,signup_date
+1001,John Smith,john.smith@email.com,New York,NY,USA,2024-01-15
+1002,Emma Johnson,emma.johnson@email.com,Chicago,IL,USA,2024-02-10
+1003,Michael Brown,michael.brown@email.com,Dallas,TX,USA,2024-02-22
+1004,Sophia Davis,sophia.davis@email.com,Seattle,WA,USA,2024-03-05
+1005,Daniel Wilson,daniel.wilson@email.com,Boston,MA,USA,2024-03-18
+1006,Olivia Martinez,olivia.martinez@email.com,Miami,FL,USA,2024-04-02
+1007,James Anderson,james.anderson@email.com,Denver,CO,USA,2024-04-21
+1008,Ava Taylor,ava.taylor@email.com,Atlanta,GA,USA,2024-05-11
+1009,William Thomas,william.thomas@email.com,Phoenix,AZ,USA,2024-05-25
+1010,Isabella Moore,isabella.moore@email.com,San Diego,CA,USA,2024-06-08
