@@ -1,0 +1,17 @@
+name: Improvement proposal
+description: Suggest a focused improvement.
+title: "[Enhancement]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior and validation
+      description: Explain the outcome, required data, and how it can be checked.
+    validations:
+      required: true

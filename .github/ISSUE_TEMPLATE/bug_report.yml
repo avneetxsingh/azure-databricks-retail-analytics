@@ -1,0 +1,20 @@
+name: Bug report
+description: Report a reproducible code or documentation problem.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: Never include tokens, signed URLs, passwords, or private records. Use Security reporting for vulnerabilities.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps and sanitized error
+      description: Include the file and runtime/compute type if relevant.
+    validations:
+      required: true
