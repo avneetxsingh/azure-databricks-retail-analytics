@@ -11,16 +11,19 @@ Last reviewed: November 20, 2026.
 - Null quantities included in rejected records.
 - Notebook syntax and selected credential-pattern checks completed locally.
 - Setup, architecture, data definitions, contribution guidance, and code license added.
+- ADF connected to GitHub on `main` with `/adf` root; existing definitions imported.
+- Resource-group ARM snapshot and separate ADF ARM package exported and reviewed.
+- GitHub Actions repository checks passed for the documentation commit.
 
 ## Next
 
 1. Configure the documented secret scope or verify Catalog privileges.
 2. Run the revised notebook in a development target and reconcile outputs.
-3. Connect/import ADF into `/adf`.
+3. Validate the ADF Copy pipeline in the target environment; its current activity copies a CSV rather than invoking Databricks.
 4. Export the completed dashboard and screenshots.
 5. Check dashboard queries against the cleaned `orders` schema.
 6. Confirm CSV provenance and prepare safe, appropriately licensed samples.
-7. Export, sanitize, and parameterize Azure infrastructure.
+7. Test the exported infrastructure in isolation; recreate omitted identity grants and Unity Catalog configuration manually.
 8. Test the setup in another environment before claiming full reproducibility.
 
 ## Boundaries

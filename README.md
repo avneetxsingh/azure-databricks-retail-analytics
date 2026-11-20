@@ -35,7 +35,7 @@ flowchart LR
     V -->|Yes: Catalog method| D[Orders Delta table]
     D -. Workspace dashboard .-> BI[Databricks AI/BI]
     DIM[Customer and Product CSVs] -. Workspace dashboard .-> BI
-    ADF[ADF: Git export pending] -. Ingestion configuration .-> B
+    ADF[ADF copy pipeline] -. Ingestion configuration .-> B
     classDef storage fill:#EFF6FF,stroke:#2563EB,color:#14243B;
     classDef compute fill:#F5F3FF,stroke:#7C3AED,color:#14243B;
     classDef output fill:#ECFDF5,stroke:#0F766E,color:#14243B;
@@ -44,7 +44,7 @@ flowchart LR
     class C,R,BI output;
 ```
 
-Solid lines describe the committed notebook workflows. Dashed lines show workspace components whose exports or integration checks are pending. This is not yet a one-command deployment.
+Solid lines describe the notebook workflows. Dashed lines show the workspace dashboard and the independently configured ADF ingestion stage; an orchestrated ingestion-to-dashboard run has not been verified. This is not yet a one-command deployment.
 
 ## Included and pending
 
@@ -55,9 +55,9 @@ Solid lines describe the committed notebook workflows. Dashed lines show workspa
 | Setup, architecture, and data definitions | Included |
 | Offline notebook and credential-pattern checks | Included |
 | Sample CSVs | Not included; provenance and publication rights need confirmation |
-| Azure Data Factory definitions | Pending Git connection/import |
+| Azure Data Factory definitions | Connected to GitHub; pipeline, dataset, linked service, factory definition, and ARM exports included |
 | Dashboard JSON and screenshots | Pending export from the finished dashboard |
-| Azure infrastructure templates | Pending export and review |
+| Azure infrastructure templates | Reviewed ARM export and example parameters included; deployment not tested |
 
 ## Two access methods
 
@@ -138,10 +138,10 @@ Checks cover notebook JSON, Python syntax, missing local Markdown links, committ
 
 ## Next milestones
 
-- Import ADF definitions into `/adf`.
+- Validate ADF Copy activity and its connection in the target environment.
 - Export the completed dashboard and add screenshots.
 - Confirm dataset rights and prepare shareable samples.
-- Add reviewed infrastructure templates and configurable environment values.
+- Test and refine infrastructure templates in an isolated environment.
 - Run the revised notebooks and verify ingestion through dashboard results.
 
 See [project status](docs/project-status.md) for the handoff checklist.

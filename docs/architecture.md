@@ -18,7 +18,7 @@ The dashboard remains a workspace asset until its `.lvdash.json` is exported to 
 
 ## Orchestration and infrastructure
 
-ADF is within the Azure project's scope, but exact pipelines, triggers, and linked services have not yet been imported here. An ADF-to-Databricks end-to-end run has not been verified during repository preparation.
+ADF is connected to this repository on `main`, using `/adf` as its root. The imported `PL_CopyData` pipeline uses the parameterized `DS_Blob` dataset and `LS_Blob` linked service to copy `csalesdata/raw/sales.csv` to `csalesdata/processed/sales_processed.csv`. It does not call a Databricks notebook. An ADF-to-Databricks end-to-end run has not been verified. The notebooks currently use their own input locations rather than consuming that copied output automatically.
 
 Resource-group templates cover supported Azure infrastructure properties. They do not replace exports of notebook/dashboard assets, storage contents, Unity Catalog setup, grants, and secrets. ADF definitions need a separate export or Git integration.
 

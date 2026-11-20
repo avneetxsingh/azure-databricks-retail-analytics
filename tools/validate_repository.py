@@ -55,6 +55,11 @@ def check() -> list[str]:
                         problems.append(f"{relative}: cell {index} has unsupported magic or invalid Python syntax")
             except (ValueError, KeyError, TypeError):
                 problems.append(f"{relative}: invalid notebook structure")
+        elif path.suffix == ".json":
+            try:
+                json.loads(text)
+            except ValueError:
+                problems.append(f"{relative}: invalid JSON")
         elif path.suffix == ".py":
             try:
                 ast.parse(text)

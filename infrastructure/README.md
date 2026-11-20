@@ -1,6 +1,20 @@
 # Azure infrastructure
 
-**Status:** reviewed resource-group templates have not been added.
+**Status:** resource-group ARM export captured and reviewed on November 20, 2026. No deployment has been run.
+
+## Included files
+
+- [resource-group.json](resource-group.json): sanitized Azure export, with location parameterized.
+- [parameters.example.json](parameters.example.json): nonsecret example values. Change globally unique resource names before deploying elsewhere.
+- [ADF ARM export](../adf/arm/ARMTemplateForFactory.json): separate export for factory artifacts; factory creation is under `adf/arm/factory/`.
+
+The resource-group snapshot contains eight definitions: a Databricks access connector, a serverless premium workspace, a StorageV2 account, its Blob/File/Queue/Table services, and the `csalesdata` container. Storage hierarchical namespace is enabled. Other storage properties are preserved from the export, including the Cold access tier; review costs and feature compatibility before reuse.
+
+Azure reported `ExportTemplateCompletedWithErrors`. The resource-group export omitted ADF; its separate export is included under `adf/arm/`. This does not establish that all role assignments, Unity Catalog objects, or other non-resource state were captured.
+
+The public template removes the workspace's environment-specific `authorizations` block and empty `createdBy`/`updatedBy` fields. It does not recreate the original authorization grants. Originals were retained locally outside the repository. No live Azure access settings were changed during sanitization.
+
+Deployment readiness is unverified: exported API versions and properties are retained, and more changes may be required for your subscription and region. The files are configuration snapshots, not a tested production deployment.
 
 ## Export
 

@@ -1,0 +1,194 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccounts_strsalesdata_name": {
+      "defaultValue": "strsalesdata",
+      "type": "String"
+    },
+    "workspaces_DBC_RetailSales_name": {
+      "defaultValue": "DBC_RetailSales",
+      "type": "String"
+    },
+    "accessConnectors_AC_RetailSalesAnalytics_DBC_name": {
+      "defaultValue": "AC_RetailSalesAnalytics_DBC",
+      "type": "String"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "eastus",
+      "metadata": {
+        "description": "Azure region for project resources."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Databricks/accessConnectors",
+      "apiVersion": "2026-01-01",
+      "name": "[parameters('accessConnectors_AC_RetailSalesAnalytics_DBC_name')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Databricks/workspaces",
+      "apiVersion": "2026-01-01",
+      "name": "[parameters('workspaces_DBC_RetailSales_name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "premium"
+      },
+      "properties": {
+        "computeMode": "Serverless",
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2026-06-01",
+      "name": "[parameters('storageAccounts_strsalesdata_name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "allowCrossTenantDelegationSas": false,
+        "dualStackEndpointPreference": {
+          "publishIpv6Endpoint": false
+        },
+        "dnsEndpointType": "Standard",
+        "defaultToOAuthAuthentication": false,
+        "publicNetworkAccess": "Enabled",
+        "allowCrossTenantReplication": false,
+        "minimumTlsVersion": "TLS1_2",
+        "allowBlobPublicAccess": false,
+        "allowSharedKeyAccess": true,
+        "isHnsEnabled": true,
+        "networkAcls": {
+          "ipv6Rules": [],
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "requireInfrastructureEncryption": false,
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Cold"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2026-06-01",
+      "name": "[concat(parameters('storageAccounts_strsalesdata_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_strsalesdata_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "staticWebsite": {
+          "enabled": false
+        },
+        "cors": {
+          "corsRules": []
+        },
+        "deleteRetentionPolicy": {
+          "allowPermanentDelete": false,
+          "enabled": false
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2026-06-01",
+      "name": "[concat(parameters('storageAccounts_strsalesdata_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_strsalesdata_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "protocolSettings": {
+          "smb": {
+            "encryptionInTransit": {
+              "required": true
+            }
+          }
+        },
+        "cors": {
+          "corsRules": []
+        },
+        "shareDeleteRetentionPolicy": {
+          "enabled": false,
+          "days": 0
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/queueServices",
+      "apiVersion": "2026-06-01",
+      "name": "[concat(parameters('storageAccounts_strsalesdata_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_strsalesdata_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2026-06-01",
+      "name": "[concat(parameters('storageAccounts_strsalesdata_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_strsalesdata_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2026-06-01",
+      "name": "[concat(parameters('storageAccounts_strsalesdata_name'), '/default/csalesdata')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_strsalesdata_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_strsalesdata_name'))]"
+      ],
+      "properties": {
+        "immutableStorageWithVersioning": {
+          "enabled": false
+        },
+        "defaultEncryptionScope": "$account-encryption-key",
+        "denyEncryptionScopeOverride": false,
+        "publicAccess": "None"
+      }
+    }
+  ]
+}
