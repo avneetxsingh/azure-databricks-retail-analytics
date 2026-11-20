@@ -14,7 +14,7 @@ The inspected workspace dashboard used `orders` plus customer and product CSV di
 
 Earlier notebook code wrote raw records to `orders` before transformations, so the dashboard repeated cleaning in SQL. The revised Catalog notebook writes validated records at the end. Review dashboard date conversions and other repeated logic against that new schema before using them together. The unchanged table name does not guarantee query compatibility.
 
-The dashboard remains a workspace asset until its `.lvdash.json` is exported to Git. Publishing, exporting, and committing are separate actions.
+The dashboard is tracked directly in the repository Git folder as `dashboards/DBC_RetailSales.lvdash.json`. Publishing remains separate from committing. Its three source queries and two metric configurations are extracted under `dashboards/sql/` for review. The date expressions handle both raw text and cleaned Date columns, and KPI values inherit the light/dark theme foreground.
 
 ## Orchestration and infrastructure
 

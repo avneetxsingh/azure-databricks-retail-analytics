@@ -29,4 +29,4 @@ It also writes `ct_salesanalytics.schema_salesanalytics.orders` as a managed Del
 - Deduplication does not specify a winner for conflicting duplicate IDs.
 - Null quantities are rejected, but broader data-quality rules are not implemented.
 - Historical displayed results in a workspace copy do not validate edited code. Outputs are excluded from Git.
-- Revised cloud read/write paths have not been executed during repository preparation.
+- Catalog cells 1–9 passed in Databricks (20 valid, 0 invalid). Output-write cells and SAS-method execution were not run during packaging.

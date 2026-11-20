@@ -8,7 +8,7 @@
 - Storage permissions for your selected method.
 - `requests` and `pandas` available for the SAS example.
 
-Provisioning, credentials, and grants are manual in this repository version.
+Provisioning, credentials, and grants are manual in this repository version. Optional `databricks/setup.sql` creates development namespaces/a managed volume when you have the necessary privileges and storage configuration; it does not recreate original external-storage credentials or grants.
 
 ## 1. Connect Git
 
@@ -22,13 +22,13 @@ Start with `main`. Pull before editing if GitHub or another clone has newer chan
 
 ## 2. Prepare input
 
-Supply `sales.csv` with:
+Use the bundled original practice files from `data/sample/`, or supply an authorized `sales.csv` with:
 
 ```text
 sale_id,sale_date,customer_id,product_id,quantity,unit_price
 ```
 
-Dates should follow the included parsing format, for example `9/1/2026`. Customer and product CSVs support the dashboard but are not loaded by the two cleaning notebooks. Git integration does not upload CSVs to a storage container or volume automatically.
+Dates should follow the included parsing format, for example `9/1/2026`. Upload all three CSVs to the volume root for the dashboard. Customer and product CSVs support the dashboard but are not loaded by the two cleaning notebooks. Git integration does not upload CSVs to a storage container or volume automatically.
 
 ## 3A. Unity Catalog method
 
@@ -68,7 +68,7 @@ The output is `<container>/valid/valid_sales.csv`. Secret references do not auto
 - Check that CSV outputs are CSV and the managed table uses Delta.
 - For dashboard joins, verify dimension key uniqueness and unmatched sales before aggregating.
 
-Historical README metrics are context, not execution evidence for the edited notebooks.
+The bundled samples reconcile locally to 20 sales, 29 units, and $7,519.71. This is not evidence that all cloud writes have run successfully. The dashboard SQL accepts both raw text dates and cleaned Date columns.
 
 ## 5. Package remaining assets
 

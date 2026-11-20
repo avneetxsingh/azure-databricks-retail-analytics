@@ -9,9 +9,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-0F766E?style=flat-square)](LICENSE)
 [![Repository checks](https://github.com/avneetxsingh/azure-databricks-retail-analytics/actions/workflows/validate.yml/badge.svg)](https://github.com/avneetxsingh/azure-databricks-retail-analytics/actions/workflows/validate.yml)
 
-A retail data engineering project exploring two ways to clean sales data in Azure Databricks: direct Azure Blob access through SAS credentials and governed access through Unity Catalog volumes. The workspace also includes a retail sales dashboard; its portable export will be added as the project is packaged.
+A retail data engineering project exploring two ways to clean sales data in Azure Databricks: direct Azure Blob access through SAS credentials and governed access through Unity Catalog volumes. The repository includes the five-page retail sales dashboard, its SQL/metric definitions, and the original synthetic practice CSVs approved for publication by the owner.
 
 [Get started](docs/setup.md) · [Architecture](docs/architecture.md) · [Data dictionary](docs/data-dictionary.md) · [Contribute](CONTRIBUTING.md)
+
+## Dashboard preview
+
+![Retail Sales Intelligence executive overview](dashboards/screenshots/01-executive-overview.jpg)
+
+Explore the [five-page dashboard and import guide](dashboards/README.md).
 
 ## Business questions
 
@@ -54,9 +60,9 @@ Solid lines describe the notebook workflows. Dashed lines show the workspace das
 | Unity Catalog cleaning notebook | Included; valid/rejected CSV outputs and validated Delta write |
 | Setup, architecture, and data definitions | Included |
 | Offline notebook and credential-pattern checks | Included |
-| Sample CSVs | Not included; provenance and publication rights need confirmation |
+| Sample CSVs | Original owner-approved synthetic practice data included; see data/sample/NOTICE.md |
 | Azure Data Factory definitions | Connected to GitHub; pipeline, dataset, linked service, factory definition, and ARM exports included |
-| Dashboard JSON and screenshots | Pending export from the finished dashboard |
+| Dashboard JSON and screenshots | Five-page Git-tracked dashboard, extracted SQL/metrics, and page previews included |
 | Azure infrastructure templates | Reviewed ARM export and example parameters included; deployment not tested |
 
 ## Two access methods
@@ -86,7 +92,7 @@ Quantity validation is deliberately narrow. Malformed dates, conflicting duplica
 
 1. Clone this repository into a Databricks Git folder.
 2. Prepare Azure Storage and the required Databricks permissions.
-3. Supply your own authorized sales CSV with the documented columns.
+3. Upload the bundled practice CSVs from `data/sample/` to the documented input locations.
 4. Follow [setup.md](docs/setup.md) to configure the selected notebook.
 5. Run that notebook from the top in a development environment.
 6. Reconcile counts, output schema, and revenue before connecting a dashboard.
@@ -106,7 +112,7 @@ The inspected workspace dashboard displayed these unfiltered results for **Septe
 | Customers with purchases | 10 |
 | Distinct products sold | 10 |
 
-These document the observed workspace snapshot, not a runtime test of the revised notebooks. Recompute them after execution. The dashboard displays USD; the source schema has no currency field.
+These reconcile to the bundled practice CSVs and the live dashboard. The Catalog cleaning stages separately returned 20 valid records; output-write cells were not executed in this review. The dashboard displays USD; the source schema has no currency field.
 
 ## Repository layout
 
@@ -132,17 +138,18 @@ Run from the repository root with Python 3.10 or later:
 
 ```bash
 python tools/validate_repository.py
+python tools/validate_sample_data.py
 ```
 
-Checks cover notebook JSON, Python syntax, missing local Markdown links, committed outputs, and selected credential patterns. The same checks run in GitHub Actions on pushes to `main` and pull requests, without Azure credentials. They do not run Spark, verify cloud permissions, or prove the absence of every possible secret. Revised cloud execution remains pending.
+Checks cover notebook JSON, Python syntax, missing local Markdown links, committed outputs, and selected credential patterns. The same checks run in GitHub Actions on pushes to `main` and pull requests, without Azure credentials. They do not run Spark, verify cloud permissions, or prove the absence of every possible secret. Catalog read/cleaning cells 1–9 passed in Databricks, the dashboard passed baseline/filter checks, and ADF definition validation passed. Output writes and fresh-environment deployment were not run. See [validation results](docs/validation.md).
 
 ## Next milestones
 
 - Validate ADF Copy activity and its connection in the target environment.
-- Export the completed dashboard and add screenshots.
-- Confirm dataset rights and prepare shareable samples.
+- Validate deployment in a second environment before claiming full reproducibility.
+- Add upstream dataset attribution if its original source becomes available.
 - Test and refine infrastructure templates in an isolated environment.
-- Run the revised notebooks and verify ingestion through dashboard results.
+- Test deliberate output writes and full orchestration in an isolated environment.
 
 See [project status](docs/project-status.md) for the handoff checklist.
 

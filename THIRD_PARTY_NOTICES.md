@@ -15,4 +15,4 @@ The MIT license covers original project code and documentation. It does not reli
 
 No third-party package distributions are bundled. Check exact versions installed in your environment for their license files and notices. Technology names do not imply endorsement.
 
-No original CSV dataset is distributed in this version. Ownership, origin, and sharing rights remain to be confirmed. Future dataset additions must include provenance and the applicable license or permission.
+The owner supplied the three original project CSVs, confirmed they are synthetic practice data, and authorized public sharing. They are included unchanged in `data/sample/`. See `data/sample/NOTICE.md`: no upstream source attribution or separate dataset license was supplied, and the code license is not proof of upstream dataset ownership.

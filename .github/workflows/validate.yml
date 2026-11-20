@@ -24,3 +24,5 @@ jobs:
           python-version: '3.12'
       - name: Validate notebooks and repository
         run: python tools/validate_repository.py
+      - name: Validate practice data and reference totals
+        run: python tools/validate_sample_data.py

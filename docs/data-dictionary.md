@@ -1,6 +1,6 @@
 # Data dictionary and metric definitions
 
-Column names were checked against the project's local CSV headers. Original records are not distributed here.
+Column names were checked against the project's local CSV headers. The owner confirmed that the original records are synthetic practice data and authorized their publication under `data/sample/`; see the provenance notice there.
 
 ## Sales
 
